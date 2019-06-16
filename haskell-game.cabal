@@ -12,7 +12,7 @@ cabal-version:       >=1.10
 
 executable haskell-game
   main-is:             Main.hs
-  -- other-modules:
+  other-modules: Entities.Draw, Entities.Game
   -- other-extensions:
   build-depends:       base, gloss
   hs-source-dirs:      src

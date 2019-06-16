@@ -1,9 +1,9 @@
-module Entities.Game (restartGame) where
 
-data Game = Game { player:: (Int, Int), obstacles::[(Int, Int)] }
+module Entities.Game where
 
-defaultPlayerPos = (5, 5)
+    data Game = Game { player:: (Float, Float), obstacles::[(Float, Float)] }
 
-restartGame :: Game -> Game
-restartGame game = game { player = defaultPlayerPos, obstacles = [] }
+    defaultPlayerPos = (0, 20)
 
+    restartGame :: Game
+    restartGame = Game { player = defaultPlayerPos, obstacles = [(150, 15), (-100, 15)] }
