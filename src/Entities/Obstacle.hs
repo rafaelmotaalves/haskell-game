@@ -1,5 +1,5 @@
 module Entities.Obstacle where
-
+    
     moveSize :: Float
     moveSize = 5
 

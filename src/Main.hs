@@ -7,7 +7,11 @@ import Graphics.Gloss.Interface.IO.Game
 import Entities.Game
 import Entities.Draw
 import Entities.Player
+import Entities.Spawner
 import Entities.Obstacle
+
+fps :: Int
+fps = 30
 
 handleInput :: Event -> Game -> IO (Game)
 handleInput (EventKey (Char 'w') (Down) _ _) game = do
@@ -16,15 +20,19 @@ handleInput (EventKey (Char 'w') (Down) _ _) game = do
 handleInput _ g = return g
 
 stepGame :: Float -> Game -> IO (Game)
-stepGame _ game = do
-  return Game { player = (adjustHeight (inJump game) (player game)), obstacles =( map (moveLeft) (obstacles game)), inJump = (toggleJump (inJump game) (player game)) }
+stepGame seconds game = do
+  return Game { 
+    player = (adjustHeight (inJump game) (player game)), 
+    obstacles =(map (moveLeft) $ spawn seconds (obstacles game)), 
+    inJump = (toggleJump (inJump game) (player game)) 
+  }
 
 main :: IO ()
 main = do
   playIO
-    (InWindow "J-Rex" (500, 500) (500, 500))
+    window
     white
-    30
+    fps
     restartGame
     render
     handleInput

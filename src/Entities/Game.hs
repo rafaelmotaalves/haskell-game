@@ -4,7 +4,8 @@ module Entities.Game where
 
     data Game = Game { player:: (Float, Float), obstacles::[(Float, Float)], inJump :: Bool }
 
-    defaultPlayerPos = (0, 20)
+    defaultPlayerPos :: (Float, Float)
+    defaultPlayerPos = (0, 0)
 
     restartGame :: Game
-    restartGame = Game { player = defaultPlayerPos, obstacles = [(400, 15), (600, 15)], inJump = False}
+    restartGame = Game { player = defaultPlayerPos, obstacles = [], inJump = False}
