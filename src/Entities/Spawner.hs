@@ -1,10 +1,19 @@
 module Entities.Spawner where
+
+    import Control.Concurrent
+    import Control.Concurrent.STM
+    
+    type Obstacles = TVar [(Float, Float)]
     
     newObstacle :: (Float, Float)
-    newObstacle = (500,15)
+    newObstacle = (260,15)
 
-    timeBetweenSpawn :: Float
-    timeBetweenSpawn = 5
+    timeBetweenSpawn :: Int
+    timeBetweenSpawn = 2000000  -- 2 seconds
 
-    spawn :: Float -> [(Float, Float)] -> [(Float, Float)]
-    spawn seconds obstaclesList = if (True) then (newObstacle:obstaclesList) else obstaclesList
+    spawn :: Obstacles -> IO()
+    spawn obstaclesList = do
+        currObstacles <- atomically(readTVar obstaclesList)
+        atomically (writeTVar obstaclesList (newObstacle:currObstacles))
+        threadDelay timeBetweenSpawn
+        spawn obstaclesList

@@ -1,11 +1,13 @@
 
-module Entities.Draw (render, background, window) where
-    import Control.Concurrent
+module Entities.Draw (render, background, window, width) where
     import Graphics.Gloss
+    import Control.Concurrent
+    import Control.Concurrent.STM
     
     import Entities.Game
     import Entities.Score
-
+    import Entities.Spawner
+    
     width, height, offset :: Int
     width = 500
     height = 500
@@ -17,10 +19,11 @@ module Entities.Draw (render, background, window) where
     background :: Color
     background = black
 
-    render :: (Game, Score) -> IO(Picture)
-    render (g, s) = do
+    render :: (Game, Score, Obstacles) -> IO(Picture)
+    render (g, s, o) = do
         score <- readMVar s
-        return (pictures ([ renderFloor , renderScore score, renderPlayer (player g)] ++  map (renderObstacle) (obstacles g)))
+        obstacles <- atomically(readTVar o)
+        return (pictures ([ renderFloor , renderScore score, renderPlayer (player g)] ++  map (renderObstacle) (obstacles)))
 
     renderPlayer :: (Float, Float) -> Picture
     renderPlayer (x, y) = translate (x) (y) $ color red $ circleSolid 20
