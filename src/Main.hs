@@ -15,7 +15,7 @@ fps = 30
 
 handleInput :: Event -> Game -> IO (Game)
 handleInput (EventKey (Char 'w') (Down) _ _) game = do
-  return Game { player = (player game), obstacles = (obstacles game), inJump = (True)  }
+  return Game { player = (player game), obstacles = (obstacles game), inJump = ((completedJump game) && True), completedJump = False }
 
 handleInput _ g = return g
 
@@ -24,7 +24,8 @@ stepGame seconds game = do
   return Game { 
     player = (adjustHeight (inJump game) (player game)), 
     obstacles =(map (moveLeft) $ spawn seconds (obstacles game)), 
-    inJump = (toggleJump (inJump game) (player game)) 
+    inJump = ((inJump game) && not (reachedMaxHeight (player game))),
+    completedJump = (finishedJump (player game))
   }
 
 main :: IO ()

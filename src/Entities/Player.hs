@@ -22,6 +22,8 @@ module Entities.Player where
     decreaseOrStayAtHeight :: Float -> Float
     decreaseOrStayAtHeight y = if (y > baseHeight) then (y - stepSize) else (baseHeight)
 
-    -- checks if its on the limit of the jump
-    toggleJump :: Bool -> (Float, Float) -> Bool
-    toggleJump inJump pos = inJump && (snd pos) < jumpLimit
+    reachedMaxHeight :: (Float, Float) -> Bool
+    reachedMaxHeight pos = (snd pos) >= jumpLimit
+
+    finishedJump :: (Float, Float) -> Bool
+    finishedJump pos = (snd pos) == baseHeight
