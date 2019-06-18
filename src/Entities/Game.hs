@@ -7,4 +7,4 @@ module Entities.Game where
     defaultPlayerPos = (0, 20)
 
     restartGame :: Game
-    restartGame = Game { player = defaultPlayerPos, obstacles = [(150, 15), (-100, 15)], inJump = False}
+    restartGame = Game { player = defaultPlayerPos, obstacles = [(400, 15), (600, 15)], inJump = False}

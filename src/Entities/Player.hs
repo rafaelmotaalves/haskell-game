@@ -4,7 +4,7 @@ module Entities.Player where
     jumpLimit = 100
 
     stepSize :: Float
-    stepSize = 20
+    stepSize = 10
 
     baseHeight :: Float
     baseHeight = 20

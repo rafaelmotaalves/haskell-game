@@ -7,6 +7,7 @@ import Graphics.Gloss.Interface.IO.Game
 import Entities.Game
 import Entities.Draw
 import Entities.Player
+import Entities.Obstacle
 
 handleInput :: Event -> Game -> IO (Game)
 handleInput (EventKey (Char 'w') (Down) _ _) game = do
@@ -16,7 +17,7 @@ handleInput _ g = return g
 
 stepGame :: Float -> Game -> IO (Game)
 stepGame _ game = do
-  return Game { player = (adjustHeight (inJump game) (player game)), obstacles = (obstacles game), inJump = (toggleJump (inJump game) (player game)) }
+  return Game { player = (adjustHeight (inJump game) (player game)), obstacles =( map (moveLeft) (obstacles game)), inJump = (toggleJump (inJump game) (player game)) }
 
 main :: IO ()
 main = do
