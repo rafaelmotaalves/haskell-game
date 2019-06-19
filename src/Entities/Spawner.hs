@@ -3,7 +3,7 @@ module Entities.Spawner where
     import Control.Concurrent
     import Control.Concurrent.STM
     
-    type Obstacles = TVar [(Float, Float)]
+    type Obstacles = MVar [(Float, Float)]
     
     newObstacle :: (Float, Float)
     newObstacle = (260,15)
@@ -13,7 +13,7 @@ module Entities.Spawner where
 
     spawn :: Obstacles -> IO()
     spawn obstaclesList = do
-        currObstacles <- atomically(readTVar obstaclesList)
-        atomically (writeTVar obstaclesList (newObstacle:currObstacles))
+        currObstacles <- takeMVar obstaclesList
+        putMVar obstaclesList (newObstacle:currObstacles)
         threadDelay timeBetweenSpawn
         spawn obstaclesList

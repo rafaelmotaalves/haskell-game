@@ -22,7 +22,7 @@ module Entities.Draw (render, background, window, width) where
     render :: (Game, Score, Obstacles) -> IO(Picture)
     render (g, s, o) = do
         score <- readMVar s
-        obstacles <- atomically(readTVar o)
+        obstacles <- readMVar o
         return (pictures ([ renderFloor , renderScore score, renderPlayer (player g)] ++  map (renderObstacle) (obstacles)))
 
     renderPlayer :: (Float, Float) -> Picture

@@ -25,8 +25,8 @@ handleInput _ g = return g
 
 stepGame :: Float -> (Game, Score, Obstacles) -> IO (Game, Score, Obstacles)
 stepGame _ (game, score, obstacles) = do
-  o <- atomically(readTVar obstacles)
-  atomically (writeTVar obstacles (filter atScreen $ map moveLeft o))
+  o <- takeMVar obstacles
+  putMVar obstacles (filter atScreen $ map moveLeft o)
   return (Game { 
     player = (adjustHeight (inJump game) (player game)),
     inJump = ((inJump game) && not (reachedMaxHeight (player game))),
@@ -37,7 +37,7 @@ stepGame _ (game, score, obstacles) = do
 main :: IO ()
 main = do
   score <- newMVar 0
-  obstacles <- atomically(newTVar [])
+  obstacles <- newMVar []
   forkIO $ (scoreIncrementer score) 
   forkIO $ (spawn obstacles) 
   playIO
