@@ -4,9 +4,7 @@ module Entities.Draw (render, background, window, width) where
     import Control.Concurrent
     import Control.Concurrent.STM
     
-    import Entities.Game
-    import Entities.Score
-    import Entities.Spawner
+    import Entities.Types
     
     width, height, offset :: Int
     width = 500

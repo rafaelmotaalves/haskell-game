@@ -1,14 +1,8 @@
 
 module Entities.Game where
     import Control.Concurrent
-    import Entities.Spawner
-    import Entities.Score
 
-    type State = (Game, Score, Obstacles, Dificulty)
-
-    type Dificulty = MVar Float
-
-    data Game = Game { player:: (Float, Float), inJump :: Bool, completedJump :: Bool }
+    import Entities.Types
 
     defaultPlayerPos :: (Float, Float)
     defaultPlayerPos = (0, 0)

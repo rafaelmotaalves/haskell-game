@@ -1,5 +1,5 @@
 module Entities.Player where
-
+    import Entities.Types
     jumpLimit :: Float
     jumpLimit = 100
 
@@ -27,3 +27,15 @@ module Entities.Player where
 
     finishedJump :: (Float, Float) -> Bool
     finishedJump pos = (snd pos) == baseHeight
+
+    handleJump :: State -> IO (State)
+    handleJump (game, score, obstacles, dificulty) = 
+        return (Game {
+            player = (player game),
+            inJump = ((completedJump game) && True), 
+            completedJump = False 
+            }, 
+            score, 
+            obstacles, 
+            dificulty)
+

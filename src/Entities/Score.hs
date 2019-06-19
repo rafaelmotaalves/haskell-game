@@ -1,10 +1,9 @@
 
 module Entities.Score where
     import Control.Concurrent
-    
-    type Score = MVar Int
+    import Entities.Types
 
-    scoreIncrementer :: Score -> MVar Float -> IO ()
+    scoreIncrementer :: Score -> Dificulty -> IO ()
     scoreIncrementer scoreVar dificultyVar= do
         score <- takeMVar scoreVar
         dificulty <- readMVar dificultyVar

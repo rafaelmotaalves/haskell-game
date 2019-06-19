@@ -1,9 +1,6 @@
 module Entities.Spawner where
-
     import Control.Concurrent
-    import Control.Concurrent.STM
-    
-    type Obstacles = MVar [(Float, Float)]
+    import Entities.Types    
     
     newObstacle :: (Float, Float)
     newObstacle = (260,15)
