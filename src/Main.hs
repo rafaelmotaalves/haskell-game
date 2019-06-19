@@ -17,34 +17,49 @@ import Entities.Score
 fps :: Int
 fps = 30
 
-handleInput :: Event -> (Game, Score, Obstacles) -> IO (Game, Score, Obstacles)
-handleInput (EventKey (Char 'w') (Down) _ _) (game, score, obstacles) = do
-  return (Game { player = (player game), inJump = ((completedJump game) && True), completedJump = False }, score, obstacles)
+handleInput :: Event -> State -> IO State
+handleInput (EventKey (Char 'w') (Down) _ _) (game, score, obstacles, dificulty) = do
+  return (Game { player = (player game), inJump = ((completedJump game) && True), completedJump = False }, score, obstacles, dificulty)
+
+handleInput (EventKey (Char 'd') (Down) _ _ ) (game, score, obstacles, dificulty) = do
+  dificultyLevel <- takeMVar dificulty
+  putMVar dificulty (dificultyLevel + 1)
+
+  obs <- takeMVar obstacles
+  putMVar obstacles ([])
+
+  s <- takeMVar score
+  putMVar score (0)
+  
+  return (game, score, obstacles, dificulty)
 
 handleInput _ g = return g
 
-stepGame :: Float -> (Game, Score, Obstacles) -> IO (Game, Score, Obstacles)
-stepGame _ (game, score, obstacles) = do
+stepGame :: Float -> State -> IO State
+stepGame _ (game, score, obstacles, dificulty) = do
+  t <- readMVar dificulty
   o <- takeMVar obstacles
-  putMVar obstacles (filter atScreen $ map moveLeft o)
+  putMVar obstacles (filter atScreen $ map (moveLeft t) o)
   return (Game { 
     player = (adjustHeight (inJump game) (player game)),
     inJump = ((inJump game) && not (reachedMaxHeight (player game))),
     completedJump = (finishedJump (player game))
-  }, score, obstacles)
+  }, score, obstacles, dificulty)
 
 
 main :: IO ()
 main = do
   score <- newMVar 0
   obstacles <- newMVar []
-  forkIO $ (scoreIncrementer score) 
+  dificulty <- newMVar 1
+
+  forkIO $ (scoreIncrementer score dificulty) 
   forkIO $ (spawn obstacles) 
   playIO
     window
     white
     fps
-    (restartGame, score, obstacles)
+    (restartGame, score, obstacles, dificulty)
     render
     handleInput
     stepGame

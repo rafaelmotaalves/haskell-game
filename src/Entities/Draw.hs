@@ -19,11 +19,12 @@ module Entities.Draw (render, background, window, width) where
     background :: Color
     background = black
 
-    render :: (Game, Score, Obstacles) -> IO(Picture)
-    render (g, s, o) = do
+    render :: State -> IO(Picture)
+    render (g, s, o, d) = do
         score <- readMVar s
         obstacles <- readMVar o
-        return (pictures ([ renderFloor , renderScore score, renderPlayer (player g)] ++  map (renderObstacle) (obstacles)))
+        dificulty <- readMVar d
+        return (pictures ([ (renderDificulty dificulty), renderFloor , renderScore score, renderPlayer (player g)] ++  map (renderObstacle) (obstacles)))
 
     renderPlayer :: (Float, Float) -> Picture
     renderPlayer (x, y) = translate (x) (y) $ color red $ circleSolid 20
@@ -34,5 +35,9 @@ module Entities.Draw (render, background, window, width) where
     renderScore :: Int -> Picture
     renderScore score = translate (175) (175) $ scale (0.2) (0.2) $ (Text (show score))
     
+    renderDificulty :: Float -> Picture
+    renderDificulty dificulty = translate (-175) (175) $ scale (0.2) (0.2) $ (Text ("Dificulty: " ++ (show dificulty)))
+
     renderFloor :: Picture
     renderFloor = (color green $ (Line [(-500, 0), (500, 0)]))
+
