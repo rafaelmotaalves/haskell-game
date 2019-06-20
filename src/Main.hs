@@ -34,8 +34,11 @@ stepGame _ (game, score, obstacles, dificulty) = do
   o <- takeMVar obstacles
   
   putMVar obstacles (moveAllObstacles o d)
-
-  return (Game { 
+  
+  if (hasCollision (player game) o)
+  then do resetStateButKeepDificulty (game, score, obstacles, dificulty)
+          return (newGame, score, obstacles, dificulty)
+  else do return (Game { 
     player = (adjustHeight (inJump game) (player game)),
     inJump = ((inJump game) && not (reachedMaxHeight (player game))),
     completedJump = (finishedJump (player game))
@@ -54,7 +57,7 @@ main = do
     window
     white
     fps
-    (restartGame, score, obstacles, dificulty)
+    (newGame, score, obstacles, dificulty)
     render
     handleInput
     stepGame

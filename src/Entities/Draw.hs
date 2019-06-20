@@ -4,6 +4,7 @@ module Entities.Draw (render, background, window, width) where
     import Control.Concurrent
     import Control.Concurrent.STM
     
+    import Entities.Game
     import Entities.Types
     
     width, height, offset :: Int
@@ -25,10 +26,10 @@ module Entities.Draw (render, background, window, width) where
         return (pictures ([ (renderDificulty dificulty), renderFloor , renderScore score, renderPlayer (player g)] ++  map (renderObstacle) (obstacles)))
 
     renderPlayer :: (Float, Float) -> Picture
-    renderPlayer (x, y) = translate (x) (y) $ color red $ circleSolid 20
+    renderPlayer (x, y) = translate (x) (y) $ color red $ circleSolid playerRadius
 
     renderObstacle :: (Float, Float) -> Picture
-    renderObstacle (x, y) = translate (x) (y) $ color blue $ rectangleSolid 10 30
+    renderObstacle (x, y) = translate (x) (y) $ color blue $ rectangleSolid obstacleWidth obstacleHeight
 
     renderScore :: Int -> Picture
     renderScore score = translate (175) (175) $ scale (0.2) (0.2) $ (Text (show score))
