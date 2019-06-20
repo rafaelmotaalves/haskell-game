@@ -1,4 +1,4 @@
-# haskell-game
+# haskell-infinite-runner
 
 Para rodar, execute:
 * cabal install gloss
