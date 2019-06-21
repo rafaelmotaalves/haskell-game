@@ -25,8 +25,9 @@ module Entities.Draw (render, background, window, width) where
         dificulty <- readMVar d
         gameOver <- readMVar go
 
-        if (gameOver) then return renderGameOverScreen
-        else do return (pictures ([ (renderDificulty dificulty), renderFloor , renderScore score, renderPlayer (player g)] ++  map (renderObstacle) (obstacles)))
+        if (gameOver) then return (renderGameOverScreen score)
+        else do 
+            return (pictures ([ (renderDificulty dificulty), renderFloor , renderScore score, renderPlayer (player g)] ++  map (renderObstacle) (obstacles)))
 
     renderPlayer :: (Float, Float) -> Picture
     renderPlayer (x, y) = translate (x) (y) $ color red $ circleSolid playerRadius
@@ -43,8 +44,11 @@ module Entities.Draw (render, background, window, width) where
     renderFloor :: Picture
     renderFloor = (color green $ (Line [(-500, 0), (500, 0)]))
 
-    renderGameOverScreen :: Picture
-    renderGameOverScreen  = (pictures [ translate (-175) (0) $ scale (0.5) (0.5) $ (Text "Game Over"), renderPressSpaceKey])
+    renderGameOverScreen :: Int -> Picture
+    renderGameOverScreen score = (pictures [ translate (-175) (0) $ scale (0.5) (0.5) $ (Text "Game Over"), renderPressSpaceKey, (renderScoreGameOver score)])
     
     renderPressSpaceKey :: Picture 
     renderPressSpaceKey = translate (-150) (-40) $ scale (0.15) (0.15) $(Text "Press r to restart the game") 
+    
+    renderScoreGameOver :: Int -> Picture
+    renderScoreGameOver score = translate (-60) (-80) $ scale (0.15) (0.15) $ (Text ("Score: " ++  (show score)))

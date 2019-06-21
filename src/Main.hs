@@ -64,7 +64,7 @@ main = do
   gameOver <- newMVar False
 
   forkIO $ (increaseDifficulty dificulty)
-  forkIO $ (scoreIncrementer score dificulty) 
+  forkIO $ (scoreIncrementer score dificulty gameOver) 
   forkIO $ (spawn obstacles) 
   
   playIO
