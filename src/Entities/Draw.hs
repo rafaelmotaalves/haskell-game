@@ -41,7 +41,7 @@ module Entities.Draw (render, background, window, width) where
     renderPlayerIO :: (Float, Float) -> IO(Picture)
     renderPlayerIO (x, y) = do
         dir <- getCurrentDirectory
-        pic <- loadBMP (dir ++ "\\images\\dino.bmp")
+        pic <- loadBMP (dir ++ "/images/dino.bmp")
         return (translate (x) (y+5) $ scale 0.2 0.2 pic )
 
     renderObstacle :: (Float, Float) -> Picture
@@ -50,7 +50,7 @@ module Entities.Draw (render, background, window, width) where
     renderObstacleIO :: (Float, Float) -> IO(Picture)
     renderObstacleIO (x, y) = do
         dir <- getCurrentDirectory
-        pic <- loadBMP (dir ++ "\\images\\cactus.bmp")
+        pic <- loadBMP (dir ++ "/images/cactus.bmp")
         return (translate (x) (y+5) $ scale 0.2 0.2 pic )
 
     renderScore :: Int -> Picture

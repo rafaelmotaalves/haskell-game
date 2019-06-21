@@ -14,7 +14,6 @@ executable haskell-game
   main-is:             Main.hs
   other-modules: Entities.Draw, Entities.Game
   -- other-extensions:
-  data-files:          images/*.bmp
   build-depends:       base, gloss, stm, random, directory
   hs-source-dirs:      src
   default-language:    Haskell2010
