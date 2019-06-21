@@ -69,7 +69,7 @@ main = do
   
   playIO
     window
-    white
+    background
     fps
     (newGame, score, obstacles, dificulty, gameOver)
     render

@@ -32,7 +32,7 @@ module Entities.Dificulty where
     maxDifficulty = 3
 
     increaseDelay :: Int
-    increaseDelay = 20000000 -- 20 seconds
+    increaseDelay = 10000000 -- 10 seconds
 
     increaseDifficulty :: Dificulty -> IO()
     increaseDifficulty difficulty = do
