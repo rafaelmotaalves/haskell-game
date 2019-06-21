@@ -1,16 +1,18 @@
 module Entities.Spawner where
     import Control.Concurrent
     import Entities.Types    
-    
+    import System.Random
+
     newObstacle :: (Float, Float)
     newObstacle = (260,15)
 
-    timeBetweenSpawn :: Int
-    timeBetweenSpawn = 2000000  -- 2 seconds
+    timeBetweenSpawn :: IO(Int)
+    timeBetweenSpawn = randomRIO(1000000, 2500000)-- 1 / 5 seconds
 
     spawn :: Obstacles -> IO()
     spawn obstaclesList = do
         currObstacles <- takeMVar obstaclesList
         putMVar obstaclesList (newObstacle:currObstacles)
-        threadDelay timeBetweenSpawn
+        cooldown <- timeBetweenSpawn
+        threadDelay cooldown
         spawn obstaclesList

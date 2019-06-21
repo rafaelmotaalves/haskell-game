@@ -5,10 +5,14 @@ module Entities.Dificulty where
     newDificulty :: IO (Dificulty)
     newDificulty = newMVar 1
 
-    raiseDificultyAndRestartGame :: Score -> Obstacles -> Dificulty -> IO ()
-    raiseDificultyAndRestartGame score obstacles dificulty =do
+    normalizeDifficulty :: Float -> Float
+    normalizeDifficulty d = max 1 d
+
+    raiseDificultyAndRestartGame :: Score -> Obstacles -> Dificulty -> (Float -> Float) -> IO ()
+    raiseDificultyAndRestartGame score obstacles dificulty incrementalFunc = do
         dificultyLevel <- takeMVar dificulty
-        putMVar dificulty (succ dificultyLevel)
+        
+        putMVar dificulty (min (normalizeDifficulty $ incrementalFunc dificultyLevel) maxDifficulty)
       
         obs <- takeMVar obstacles
         putMVar obstacles ([])
@@ -16,7 +20,28 @@ module Entities.Dificulty where
         s <- takeMVar score
         putMVar score (0)
 
-    handleDificultyRaise :: State -> IO (State)
-    handleDificultyRaise (game, score, obstacles, dificulty) = do
-        raiseDificultyAndRestartGame score obstacles dificulty
+    handleDificultyRaise :: State -> (Float -> Float) -> IO (State)
+    handleDificultyRaise (game, score, obstacles, dificulty) incrementalFunc = do
+        raiseDificultyAndRestartGame score obstacles dificulty incrementalFunc
         return (game, score, obstacles, dificulty)
+    
+    increaseRate :: Float
+    increaseRate = 0.1
+
+    maxDifficulty :: Float
+    maxDifficulty = 3
+
+    increaseDelay :: Int
+    increaseDelay = 20000000 -- 20 seconds
+
+    increaseDifficulty :: Dificulty -> IO()
+    increaseDifficulty difficulty = do
+        d <- readMVar difficulty
+        if (d >= maxDifficulty) then 
+            return ()
+        else do
+            d <- takeMVar difficulty
+            putMVar difficulty (d+increaseRate)
+            threadDelay increaseDelay
+            increaseDifficulty difficulty
+

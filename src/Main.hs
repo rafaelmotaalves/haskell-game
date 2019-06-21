@@ -21,9 +21,11 @@ fps = 30
 
 handleInput :: Event -> State -> IO State
 
-handleInput (EventKey (Char 'w') (Down) _ _) state = (handleJump state)
+handleInput (EventKey (SpecialKey KeySpace) (Down) _ _) state = (handleJump state)
 
-handleInput (EventKey (Char 'd') (Down) _ _ ) state = (handleDificultyRaise state)
+handleInput (EventKey (SpecialKey KeyPageUp) (Down) _ _ ) state = (handleDificultyRaise state succ)
+
+handleInput (EventKey (SpecialKey KeyPageDown) (Down) _ _ ) state = (handleDificultyRaise state pred)
 
 handleInput _ g = return g
 
@@ -51,8 +53,10 @@ main = do
   obstacles <- newObstacles
   dificulty <- newDificulty
 
+  forkIO $ (increaseDifficulty dificulty)
   forkIO $ (scoreIncrementer score dificulty) 
   forkIO $ (spawn obstacles) 
+  
   playIO
     window
     white
