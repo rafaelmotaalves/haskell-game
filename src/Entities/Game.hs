@@ -8,7 +8,7 @@ module Entities.Game where
     playerRadius = 20
 
     obstacleWidth :: Float
-    obstacleWidth = 10
+    obstacleWidth = 20
 
     obstacleHeight :: Float
     obstacleHeight = 30
@@ -20,12 +20,16 @@ module Entities.Game where
     newGame = Game { player = defaultPlayerPos, inJump = False, completedJump = True }
 
     resetStateButKeepDificulty :: State -> IO ()
-    resetStateButKeepDificulty (game, score, obstacles, dificulty ) = do 
+    resetStateButKeepDificulty (game, score, obstacles, dificulty, gameOver ) = do 
         obs <- takeMVar obstacles
         putMVar obstacles ([])
   
         s <- takeMVar score
         putMVar score (0)
+
+        d <- takeMVar dificulty
+
+        putMVar dificulty (fromIntegral (floor d))
 
         return ()
 
@@ -40,3 +44,14 @@ module Entities.Game where
             
     hasCollision :: (Float, Float) -> [(Float, Float)] -> Bool
     hasCollision playerPos obstacles = (any (testCollision (playerPos)) obstacles)
+
+    setGameOver :: GameOver -> Bool -> IO ()
+    setGameOver gOver value = do
+        status <- takeMVar gOver
+        putMVar gOver value
+
+    handleRestartGame :: State -> IO (State)
+    handleRestartGame (game, score, obstacles, dificulty, gameOver) = do
+        setGameOver gameOver False 
+        resetStateButKeepDificulty (game, score, obstacles, dificulty, gameOver)
+        return (game, score, obstacles, dificulty, gameOver)

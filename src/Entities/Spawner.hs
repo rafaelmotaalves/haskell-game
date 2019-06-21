@@ -7,7 +7,7 @@ module Entities.Spawner where
     newObstacle = (260,15)
 
     timeBetweenSpawn :: IO(Int)
-    timeBetweenSpawn = randomRIO(1000000, 2500000)-- 1 / 5 seconds
+    timeBetweenSpawn = randomRIO(500000, 2500000)-- 0.5 / 5 seconds
 
     spawn :: Obstacles -> IO()
     spawn obstaclesList = do

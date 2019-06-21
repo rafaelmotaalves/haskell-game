@@ -6,6 +6,7 @@ module Entities.Types where
     type Dificulty = MVar Float
     type Score = MVar Int
     type Obstacles = MVar [(Float, Float)]
+    type GameOver = MVar Bool
 
 
-    type State = (Game, Score, Obstacles, Dificulty)
+    type State = (Game, Score, Obstacles, Dificulty, GameOver)
