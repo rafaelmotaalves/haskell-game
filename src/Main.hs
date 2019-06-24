@@ -1,5 +1,7 @@
 module Main where
 
+import System.Directory
+
 import Control.Concurrent
 import Control.Concurrent.STM
 
@@ -32,7 +34,7 @@ handleInput (EventKey (Char 'r') (Down) _ _ ) state = (handleRestartGame state)
 handleInput _ g = return g
 
 stepGame :: Float -> State -> IO State
-stepGame _ (game, score, obstacles, dificulty, gameOver) = do
+stepGame _ (game, score, obstacles, dificulty, gameOver, obstaclePic, playerPic) = do
   go <- readMVar gameOver
 
   if (not go) 
@@ -45,15 +47,15 @@ stepGame _ (game, score, obstacles, dificulty, gameOver) = do
     if (hasCollision (player game) o)
     then do 
             setGameOver gameOver (True)
-            return (newGame, score, obstacles, dificulty, gameOver)
+            return (newGame, score, obstacles, dificulty, gameOver, obstaclePic, playerPic)
     else do return (Game { 
       player = (adjustHeight (inJump game) (player game)),
       inJump = ((inJump game) && not (reachedMaxHeight (player game))),
       completedJump = (finishedJump (player game))
-    }, score, obstacles, dificulty, gameOver)
+    }, score, obstacles, dificulty, gameOver, obstaclePic, playerPic)
     
   else do 
-    return (game, score, obstacles, dificulty, gameOver) -- do nothing
+    return (game, score, obstacles, dificulty, gameOver, obstaclePic, playerPic) -- do nothing
 
 
 main :: IO ()
@@ -62,7 +64,12 @@ main = do
   obstacles <- newObstacles
   dificulty <- newDificulty
   gameOver <- newMVar False
+  
+  dir <- getCurrentDirectory
 
+  cactusPic <- loadBMP (dir ++ "/images/cactus.bmp")
+  dinoPic <- loadBMP (dir ++ "/images/dino.bmp")
+  
   forkIO $ (increaseDifficulty dificulty)
   forkIO $ (scoreIncrementer score dificulty gameOver) 
   forkIO $ (spawn obstacles) 
@@ -71,7 +78,7 @@ main = do
     window
     background
     fps
-    (newGame, score, obstacles, dificulty, gameOver)
+    (newGame, score, obstacles, dificulty, gameOver, cactusPic, dinoPic)
     render
     handleInput
     stepGame

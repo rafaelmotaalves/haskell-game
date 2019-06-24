@@ -3,7 +3,6 @@ module Entities.Draw (render, background, window, width) where
     import Graphics.Gloss
     import Control.Concurrent
     import Control.Concurrent.STM
-    import System.Directory
     import Control.Monad
 
     import Entities.Game
@@ -24,13 +23,13 @@ module Entities.Draw (render, background, window, width) where
     floorColor = makeColorI 0 0 0 1
 
     render :: State -> IO(Picture)
-    render (g, s, o, d, go) = do
+    render (g, s, o, d, go, obstPic, plyPic) = do
         score <- readMVar s
         obst <- readMVar o
         dificulty <- readMVar d
         gameOver <- readMVar go
-        playerPic <- renderPlayerIO (player g)
-        obstacles <- mapM (renderObstacleIO) (obst)
+        playerPic <- renderPlayerIO (plyPic) (player g)
+        obstacles <- mapM (renderObstacleIO obstPic) (obst)
         if (gameOver) then return (renderGameOverScreen score)
         else do 
             return (pictures ([ (renderDificulty dificulty), renderFloor , renderScore score, playerPic] ++ obstacles))
@@ -38,20 +37,16 @@ module Entities.Draw (render, background, window, width) where
     renderPlayer :: (Float, Float) -> Picture
     renderPlayer (x, y) = translate (x) (y) $ color red $ circleSolid playerRadius
     
-    renderPlayerIO :: (Float, Float) -> IO(Picture)
-    renderPlayerIO (x, y) = do
-        dir <- getCurrentDirectory
-        pic <- loadBMP (dir ++ "/images/dino.bmp")
+    renderPlayerIO :: Picture -> (Float, Float) -> IO(Picture)
+    renderPlayerIO pic (x, y) = do
         return (translate (x) (y+5) $ scale 0.2 0.2 pic )
 
     renderObstacle :: (Float, Float) -> Picture
     renderObstacle (x, y) = translate (x) (y) $ color blue $ rectangleSolid obstacleWidth obstacleHeight
     
-    renderObstacleIO :: (Float, Float) -> IO(Picture)
-    renderObstacleIO (x, y) = do
-        dir <- getCurrentDirectory
-        pic <- loadBMP (dir ++ "/images/cactus.bmp")
-        return (translate (x) (y+5) $ scale 0.2 0.2 pic )
+    renderObstacleIO :: Picture -> (Float, Float) -> IO(Picture)
+    renderObstacleIO pic (x, y) = do
+        return (translate (x) (y+5) $ scale 0.2 0.2 pic)
 
     renderScore :: Int -> Picture
     renderScore score = translate (175) (175) $ scale (0.2) (0.2) $ (Text (show score))

@@ -21,9 +21,9 @@ module Entities.Dificulty where
         putMVar score (0)
 
     handleDificultyRaise :: State -> (Float -> Float) -> IO (State)
-    handleDificultyRaise (game, score, obstacles, dificulty, gameOver) incrementalFunc = do
+    handleDificultyRaise (game, score, obstacles, dificulty, gameOver, obstaclePic, playerPic) incrementalFunc = do
         raiseDificultyAndRestartGame score obstacles dificulty incrementalFunc
-        return (game, score, obstacles, dificulty, gameOver)
+        return (game, score, obstacles, dificulty, gameOver, obstaclePic, playerPic)
     
     increaseRate :: Float
     increaseRate = 0.1

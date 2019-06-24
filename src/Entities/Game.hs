@@ -20,7 +20,7 @@ module Entities.Game where
     newGame = Game { player = defaultPlayerPos, inJump = False, completedJump = True }
 
     resetStateButKeepDificulty :: State -> IO ()
-    resetStateButKeepDificulty (game, score, obstacles, dificulty, gameOver ) = do 
+    resetStateButKeepDificulty (game, score, obstacles, dificulty, gameOver, obstaclePic, playerPic ) = do 
         obs <- takeMVar obstacles
         putMVar obstacles ([])
   
@@ -51,7 +51,7 @@ module Entities.Game where
         putMVar gOver value
 
     handleRestartGame :: State -> IO (State)
-    handleRestartGame (game, score, obstacles, dificulty, gameOver) = do
+    handleRestartGame (game, score, obstacles, dificulty, gameOver, obstaclePic, playerPic) = do
         setGameOver gameOver False 
-        resetStateButKeepDificulty (game, score, obstacles, dificulty, gameOver)
-        return (game, score, obstacles, dificulty, gameOver)
+        resetStateButKeepDificulty (game, score, obstacles, dificulty, gameOver, obstaclePic, playerPic)
+        return (game, score, obstacles, dificulty, gameOver, obstaclePic, playerPic)

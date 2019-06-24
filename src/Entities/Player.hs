@@ -29,7 +29,7 @@ module Entities.Player where
     finishedJump pos = (snd pos) == baseHeight
 
     handleJump :: State -> IO (State)
-    handleJump (game, score, obstacles, dificulty, gameOver) = 
+    handleJump (game, score, obstacles, dificulty, gameOver, obstaclePic, playerPic) = 
         return (Game {
             player = (player game),
             inJump = ((completedJump game) && True), 
@@ -38,5 +38,5 @@ module Entities.Player where
             score, 
             obstacles, 
             dificulty,
-            gameOver)
+            gameOver, obstaclePic, playerPic)
 
