@@ -58,6 +58,14 @@ stepGame _ (game, score, obstacles, dificulty, gameOver, obstaclePic, playerPic)
     return (game, score, obstacles, dificulty, gameOver, obstaclePic, playerPic) -- do nothing
 
 
+loadImages :: [Picture] -> Int -> Int -> IO([Picture])
+loadImages a i m = do
+  if i <= m then do
+    dir <- getCurrentDirectory
+    pic <- loadBMP (dir ++ "/images/king/" ++ show i ++ ".bmp")
+    loadImages (a ++ [pic]) (i+1) m
+  else return (a)
+
 main :: IO ()
 main = do
   score <- newMVar 0
@@ -66,6 +74,8 @@ main = do
   gameOver <- newMVar False
   
   dir <- getCurrentDirectory
+
+  pictures <- loadImages [] 1 18
 
   cactusPic <- loadBMP (dir ++ "/images/cactus.bmp")
   dinoPic <- loadBMP (dir ++ "/images/dino.bmp")
