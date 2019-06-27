@@ -55,7 +55,8 @@ module Entities.Draw (render, background, window, width) where
     renderScore score = translate (80) (-175) $ scale (0.2) (0.2) $ (Text ("Score " ++ show score))
     
     renderDificulty :: Float -> Picture
-    renderDificulty difficulty = translate (-175) (-175) $ scale (0.2) (0.2) $ (Text ("Difficulty " ++ (show difficulty)))
+
+    renderDificulty difficulty = translate (-175) (-175) $ scale (0.2) (0.2) $ (Text ("Difficulty " ++ (show $ roundDificulty (difficulty))))
 
     renderFloor :: Picture
     renderFloor = (color floorColor $ (Polygon [(-500, 0), (500, 0), (500, -500), (-500, -500)]))
@@ -74,3 +75,6 @@ module Entities.Draw (render, background, window, width) where
     
     renderScoreGameOver :: Int -> Picture
     renderScoreGameOver score = translate (-60) (-80) $ scale (0.15) (0.15) $ (Text ("Score: " ++  (show score)))
+
+    roundDificulty :: Float -> Float
+    roundDificulty d = (fromInteger $ round $ d * (10)) / (10.0)
