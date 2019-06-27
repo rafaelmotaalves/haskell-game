@@ -1,18 +1,18 @@
-module Entities.Dificulty where
+module Entities.Difficulty where
     import Control.Concurrent
     import Entities.Types
 
-    newDificulty :: IO (Dificulty)
-    newDificulty = newMVar 1
+    newDifficulty :: IO (Difficulty)
+    newDifficulty = newMVar 1
 
     normalizeDifficulty :: Float -> Float
     normalizeDifficulty d = max 1 d
 
-    raiseDificultyAndRestartGame :: Score -> Obstacles -> Dificulty -> (Float -> Float) -> IO ()
-    raiseDificultyAndRestartGame score obstacles difficulty incrementalFunc = do
-        dificultyLevel <- takeMVar difficulty
+    raiseDifficultyAndRestartGame :: Score -> Obstacles -> Difficulty -> (Float -> Float) -> IO ()
+    raiseDifficultyAndRestartGame score obstacles difficulty incrementalFunc = do
+        difficultyLevel <- takeMVar difficulty
         
-        putMVar difficulty (min (normalizeDifficulty $ incrementalFunc dificultyLevel) maxDifficulty)
+        putMVar difficulty (min (normalizeDifficulty $ incrementalFunc difficultyLevel) maxDifficulty)
       
         obs <- takeMVar obstacles
         putMVar obstacles ([])
@@ -20,9 +20,9 @@ module Entities.Dificulty where
         s <- takeMVar score
         putMVar score (0)
 
-    handleDificultyRaise :: State -> (Float -> Float) -> IO (State)
-    handleDificultyRaise (game, score, obstacles, difficulty, gameOver, obstaclePic, playerPic, playerPics, obstaclePics, playerFrame, obstacleFrame) incrementalFunc = do
-        raiseDificultyAndRestartGame score obstacles difficulty incrementalFunc
+    handleDifficultyRaise :: State -> (Float -> Float) -> IO (State)
+    handleDifficultyRaise (game, score, obstacles, difficulty, gameOver, obstaclePic, playerPic, playerPics, obstaclePics, playerFrame, obstacleFrame) incrementalFunc = do
+        raiseDifficultyAndRestartGame score obstacles difficulty incrementalFunc
         return (game, score, obstacles, difficulty, gameOver, obstaclePic, playerPic, playerPics, obstaclePics, playerFrame, obstacleFrame)
     
     increaseRate :: Float
@@ -34,7 +34,7 @@ module Entities.Dificulty where
     increaseDelay :: Int
     increaseDelay = 10000000 -- 10 seconds
 
-    increaseDifficulty :: Dificulty -> IO()
+    increaseDifficulty :: Difficulty -> IO()
     increaseDifficulty difficulty = do
         d <- readMVar difficulty
         if (d >= maxDifficulty) then 

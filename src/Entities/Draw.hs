@@ -17,46 +17,56 @@ module Entities.Draw (render, background, window, width) where
     window = InWindow "Runner" (width, height) (offset, offset)
 
     background :: Color
-    background = makeColorI 247 247 247 1
+    background = makeColorI 168 255 255 150
 
     floorColor :: Color
-    floorColor = makeColorI 0 0 0 1
+    floorColor = makeColorI 185 156 107 255
+  
+    floorDetailColor :: Color
+    floorDetailColor = makeColorI 213 196 161 255
 
     render :: State -> IO(Picture)
-    render (g, s, o, d, go, obstPic, plyPic) = do
+    render (g, s, o, d, go, obstPic, plyPic, playerPics, obstaclePics, playerFrame, obstacleFrame) = do
         score <- readMVar s
         obst <- readMVar o
-        dificulty <- readMVar d
+        difficulty <- readMVar d
         gameOver <- readMVar go
         playerPic <- renderPlayerIO (plyPic) (player g)
         obstacles <- mapM (renderObstacleIO obstPic) (obst)
         if (gameOver) then return (renderGameOverScreen score)
         else do 
-            return (pictures ([ (renderDificulty dificulty), renderFloor , renderScore score, playerPic] ++ obstacles))
+            return (pictures ([renderFloor , (renderDificulty difficulty), renderFloorDetails, renderSun, renderScore score, playerPic] ++ obstacles))
 
     renderPlayer :: (Float, Float) -> Picture
     renderPlayer (x, y) = translate (x) (y) $ color red $ circleSolid playerRadius
-    
+
     renderPlayerIO :: Picture -> (Float, Float) -> IO(Picture)
     renderPlayerIO pic (x, y) = do
-        return (translate (x) (y+5) $ scale 0.2 0.2 pic )
+        return (translate (x) (y+5) $ scale 1.5 1.5 pic )
 
     renderObstacle :: (Float, Float) -> Picture
     renderObstacle (x, y) = translate (x) (y) $ color blue $ rectangleSolid obstacleWidth obstacleHeight
     
     renderObstacleIO :: Picture -> (Float, Float) -> IO(Picture)
     renderObstacleIO pic (x, y) = do
-        return (translate (x) (y+5) $ scale 0.2 0.2 pic)
+        return (translate (x) (y+10) $ scale 1.5 1.5 pic)
 
     renderScore :: Int -> Picture
-    renderScore score = translate (175) (175) $ scale (0.2) (0.2) $ (Text (show score))
+    renderScore score = translate (80) (-175) $ scale (0.2) (0.2) $ (Text ("Score " ++ show score))
     
     renderDificulty :: Float -> Picture
-    renderDificulty dificulty = translate (-175) (175) $ scale (0.2) (0.2) $ (Text ("Dificulty: " ++ (show $ roundDificulty (dificulty))))
+
+    renderDificulty difficulty = translate (-175) (-175) $ scale (0.2) (0.2) $ (Text ("Difficulty " ++ (show $ roundDificulty (difficulty))))
 
     renderFloor :: Picture
-    renderFloor = (color (greyN 0.8) $ (Line [(-500, 0), (500, 0)]))
+    renderFloor = (color floorColor $ (Polygon [(-500, 0), (500, 0), (500, -500), (-500, -500)]))
+    
+    renderSun :: Picture
+    renderSun = translate (200) (200) $ color yellow $ circleSolid 25
 
+    renderFloorDetails :: Picture
+    renderFloorDetails = (color floorDetailColor $ (Polygon [(-500, 0), (500, 0), (500, -7), (-500, -7)]))
+    
     renderGameOverScreen :: Int -> Picture
     renderGameOverScreen score = (pictures [ translate (-175) (0) $ scale (0.5) (0.5) $ (Text "Game Over"), renderPressSpaceKey, (renderScoreGameOver score)])
     

@@ -19,17 +19,17 @@ module Entities.Game where
     newGame :: Game
     newGame = Game { player = defaultPlayerPos, inJump = False, completedJump = True }
 
-    resetStateButKeepDificulty :: State -> IO ()
-    resetStateButKeepDificulty (game, score, obstacles, dificulty, gameOver, obstaclePic, playerPic ) = do 
+    resetStateButKeepDifficulty :: State -> IO ()
+    resetStateButKeepDifficulty (game, score, obstacles, difficulty, gameOver, obstaclePic, playerPic, playerPics, obstaclePics, playerFrame, obstacleFrame ) = do 
         obs <- takeMVar obstacles
         putMVar obstacles ([])
   
         s <- takeMVar score
         putMVar score (0)
 
-        d <- takeMVar dificulty
+        d <- takeMVar difficulty
 
-        putMVar dificulty (fromIntegral (floor d))
+        putMVar difficulty (fromIntegral (floor d))
 
         return ()
 
@@ -51,7 +51,7 @@ module Entities.Game where
         putMVar gOver value
 
     handleRestartGame :: State -> IO (State)
-    handleRestartGame (game, score, obstacles, dificulty, gameOver, obstaclePic, playerPic) = do
+    handleRestartGame (game, score, obstacles, difficulty, gameOver, obstaclePic, playerPic, playerPics, obstaclePics, playerFrame, obstacleFrame) = do
         setGameOver gameOver False 
-        resetStateButKeepDificulty (game, score, obstacles, dificulty, gameOver, obstaclePic, playerPic)
-        return (game, score, obstacles, dificulty, gameOver, obstaclePic, playerPic)
+        resetStateButKeepDifficulty (game, score, obstacles, difficulty, gameOver, obstaclePic, playerPic, playerPics, obstaclePics, playerFrame, obstacleFrame)
+        return (game, score, obstacles, difficulty, gameOver, obstaclePic, playerPic, playerPics, obstaclePics, playerFrame, obstacleFrame)
