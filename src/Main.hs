@@ -83,9 +83,6 @@ main = do
 
   kingPics <- loadImages "king" [] 1 kingFrames
   enemyPics <- loadImages "enemy" [] 1 enemyFrames
-
-  cactusPic <- loadBMP (dir ++ "/images/cactus.bmp")
-  dinoPic <- loadBMP (dir ++ "/images/dino.bmp")
   
   forkIO $ (increaseDifficulty difficulty)
   forkIO $ (scoreIncrementer score difficulty gameOver) 
