@@ -35,7 +35,7 @@ module Entities.Draw (render, background, window, width) where
         obstacles <- mapM (renderObstacleIO obstPic) (obst)
         if (gameOver) then return (renderGameOverScreen score)
         else do 
-            return (pictures ([renderFloor , (renderDificulty dificulty), renderFloorDetails, renderSun, renderScore score, playerPic] ++ obstacles))
+            return (pictures ([renderFloor , (renderDificulty difficulty), renderFloorDetails, renderSun, renderScore score, playerPic] ++ obstacles))
 
     renderPlayer :: (Float, Float) -> Picture
     renderPlayer (x, y) = translate (x) (y) $ color red $ circleSolid playerRadius
@@ -55,7 +55,7 @@ module Entities.Draw (render, background, window, width) where
     renderScore score = translate (80) (-175) $ scale (0.2) (0.2) $ (Text ("Score " ++ show score))
     
     renderDificulty :: Float -> Picture
-    renderDificulty dificulty = translate (-175) (-175) $ scale (0.2) (0.2) $ (Text ("Difficulty " ++ (show dificulty)))
+    renderDificulty difficulty = translate (-175) (-175) $ scale (0.2) (0.2) $ (Text ("Difficulty " ++ (show difficulty)))
 
     renderFloor :: Picture
     renderFloor = (color floorColor $ (Polygon [(-500, 0), (500, 0), (500, -500), (-500, -500)]))
