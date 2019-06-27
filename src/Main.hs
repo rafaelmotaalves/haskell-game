@@ -52,7 +52,7 @@ stepGame _ (game, score, obstacles, dificulty, gameOver, obstaclePic, playerPic,
       player = (adjustHeight (inJump game) (player game)),
       inJump = ((inJump game) && not (reachedMaxHeight (player game))),
       completedJump = (finishedJump (player game))
-    }, score, obstacles, dificulty, gameOver, obstaclePics!!obstacleFrame, playerPics!!playerFrame, playerPics, obstaclePics, (playerFrame+1)`mod`17, (obstacleFrame+1)`mod`16)
+    }, score, obstacles, dificulty, gameOver, obstaclePics!!obstacleFrame, playerPics!!playerFrame, playerPics, obstaclePics, (playerFrame+1)`mod`(kingFrames-1), (obstacleFrame+1)`mod`(enemyFrames-1))
     
   else do 
     return (game, score, obstacles, dificulty, gameOver, obstaclePic, playerPic, playerPics, obstaclePics, playerFrame, obstacleFrame) -- do nothing
@@ -63,8 +63,14 @@ loadImages char a i m = do
   if i <= m then do
     dir <- getCurrentDirectory
     pic <- loadBMP (dir ++ "/images/" ++ char ++ "/" ++ show i ++ ".bmp")
-    loadImages char (a ++ [pic]) (i+1) m
+    loadImages char (a ++ [pic] ++ [pic] ++ [pic] ++ [pic]) (i+1) m
   else return (a)
+
+kingFrames :: Int
+kingFrames = 17
+
+enemyFrames :: Int
+enemyFrames = 17
 
 main :: IO ()
 main = do
@@ -75,8 +81,8 @@ main = do
   
   dir <- getCurrentDirectory
 
-  kingPics <- loadImages "king" [] 1 18
-  enemyPics <- loadImages "enemy" [] 1 17
+  kingPics <- loadImages "king" [] 1 kingFrames
+  enemyPics <- loadImages "enemy" [] 1 enemyFrames
 
   cactusPic <- loadBMP (dir ++ "/images/cactus.bmp")
   dinoPic <- loadBMP (dir ++ "/images/dino.bmp")
