@@ -23,7 +23,7 @@ module Entities.Draw (render, background, window, width) where
     floorColor = makeColorI 0 0 0 1
 
     render :: State -> IO(Picture)
-    render (g, s, o, d, go, obstPic, plyPic) = do
+    render (g, s, o, d, go, obstPic, plyPic, playerPics, obstaclePics, playerFrame, obstacleFrame) = do
         score <- readMVar s
         obst <- readMVar o
         dificulty <- readMVar d
@@ -39,14 +39,14 @@ module Entities.Draw (render, background, window, width) where
     
     renderPlayerIO :: Picture -> (Float, Float) -> IO(Picture)
     renderPlayerIO pic (x, y) = do
-        return (translate (x) (y+5) $ scale 0.2 0.2 pic )
+        return (translate (x) (y+5) $ scale 1.5 1.5 pic )
 
     renderObstacle :: (Float, Float) -> Picture
     renderObstacle (x, y) = translate (x) (y) $ color blue $ rectangleSolid obstacleWidth obstacleHeight
     
     renderObstacleIO :: Picture -> (Float, Float) -> IO(Picture)
     renderObstacleIO pic (x, y) = do
-        return (translate (x) (y+5) $ scale 0.2 0.2 pic)
+        return (translate (x) (y+10) $ scale 1.5 1.5 pic)
 
     renderScore :: Int -> Picture
     renderScore score = translate (175) (175) $ scale (0.2) (0.2) $ (Text (show score))

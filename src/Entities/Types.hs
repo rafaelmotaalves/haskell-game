@@ -10,5 +10,9 @@ module Entities.Types where
     type GameOver = MVar Bool
     type ObstaclePic = Picture
     type PlayerPic = Picture
+    type PlayerPics = [Picture]
+    type ObstaclePics = [Picture]
+    type PlayerPicFrame = Int
+    type ObstaclePicFrame = Int
 
-    type State = (Game, Score, Obstacles, Dificulty, GameOver, ObstaclePic, PlayerPic)
+    type State = (Game, Score, Obstacles, Dificulty, GameOver, ObstaclePic, PlayerPic, PlayerPics, ObstaclePics, PlayerPicFrame, ObstaclePicFrame)
