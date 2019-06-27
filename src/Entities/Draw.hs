@@ -29,7 +29,7 @@ module Entities.Draw (render, background, window, width) where
     render (g, s, o, d, go, obstPic, plyPic, playerPics, obstaclePics, playerFrame, obstacleFrame) = do
         score <- readMVar s
         obst <- readMVar o
-        dificulty <- readMVar d
+        difficulty <- readMVar d
         gameOver <- readMVar go
         playerPic <- renderPlayerIO (plyPic) (player g)
         obstacles <- mapM (renderObstacleIO obstPic) (obst)

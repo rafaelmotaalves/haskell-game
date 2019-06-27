@@ -4,14 +4,14 @@ module Entities.Score where
     import Entities.Types
     import Control.Monad
 
-    scoreIncrementer :: Score -> Dificulty -> GameOver -> IO ()
-    scoreIncrementer scoreVar dificultyVar gameOverVar = do
+    scoreIncrementer :: Score -> Difficulty -> GameOver -> IO ()
+    scoreIncrementer scoreVar difficultyVar gameOverVar = do
         score <- takeMVar scoreVar
-        dificulty <- readMVar dificultyVar
+        difficulty <- readMVar difficultyVar
         gameOver <- readMVar gameOverVar
 
         when (not gameOver) $ (putMVar scoreVar (score + 10))
         when (gameOver) $ (putMVar scoreVar score)
         
-        threadDelay (round (1000000 / dificulty))
-        scoreIncrementer scoreVar dificultyVar gameOverVar
+        threadDelay (round (1000000 / difficulty))
+        scoreIncrementer scoreVar difficultyVar gameOverVar
